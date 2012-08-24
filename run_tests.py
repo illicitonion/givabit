@@ -20,7 +20,7 @@ if len(sys.argv) > 1:
             GetTestCases(child, acc)
         return acc
     all_tests = GetTestCases(suites)
-    tests = [test for test in all_tests if test.id() == sys.argv[1]]
+    tests = [test for test in all_tests if test.id().startswith(sys.argv[1])]
     suites = unittest.TestSuite(tests)
 
 unittest.TextTestRunner(verbosity=1).run(suites)
