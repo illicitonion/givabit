@@ -4,10 +4,10 @@ from user import User, UserStatus
 from user_repository import UserRepository
 
 class UserRepositoryTest(test_utils.TestCase):
-    def testValidatesProperties(self):
+    def test_validates_properties(self):
         self.assertRaises(lambda: User(email='foo'))
 
-    def testCreatesUnconfirmedUser(self):
+    def test_creates_unconfirmed_user(self):
         email = 'someone@foo.com'
         repo = UserRepository()
         new_user = User(email=email)
@@ -18,7 +18,7 @@ class UserRepositoryTest(test_utils.TestCase):
         self.assertEquals(returned_user.email, email)
         self.assertEquals(returned_user.status, UserStatus.UNCONFIRMED)
 
-    def testConfirmsUser(self):
+    def test_confirms_user(self):
         email = 'someone@foo.com'
         repo = UserRepository()
         new_user = User(email=email)

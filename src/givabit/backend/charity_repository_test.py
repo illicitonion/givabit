@@ -13,10 +13,10 @@ class CharityRepositoryTest(test_utils.TestCase):
         for charity in self.all_charities:
             self.repo.add_or_update_charity(charity)
 
-    def testListsCharities(self):
+    def test_lists_charities(self):
         self.assertSequenceEqual(self.repo.list_charities(), self.all_charities)
 
-    def testGetsSingleCharity(self):
+    def test_gets_single_charity(self):
         self.assertEqual(self.repo.get_charity('Shelter'), test_data.c1)
         self.assertEqual(self.repo.get_charity('Oxfam'), test_data.c2)
         self.assertRaises(MissingValueException, lambda: self.repo.get_charity('Does not exist'))

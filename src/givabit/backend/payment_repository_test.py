@@ -8,7 +8,7 @@ from payment_repository import PaymentRepository
 
 class PaymentRepositoryTest(test_utils.TestCase):
 
-    def testAggregatesCharityTotalsAcrossUsers(self):
+    def test_aggregates_charity_totals_across_users(self):
         self.add_confirmed_users([test_data.u1, test_data.u2])
         self.add_charities([test_data.c1, test_data.c2])
 
