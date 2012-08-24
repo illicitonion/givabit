@@ -19,6 +19,10 @@ class Payment(db.Model):
     def new(cls, charity, **kwargs):
         return Payment(parent=charity, charity=charity, **kwargs)
 
+class IncomingPayment(db.Model):
+    user = db.ReferenceProperty(User)
+    amount_GBPennies = db.IntegerProperty()
+
 class OutgoingPayment(db.Model):
     charity = db.ReferenceProperty(Charity)
     amount_GBPennies = db.IntegerProperty()

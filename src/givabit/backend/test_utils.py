@@ -35,9 +35,14 @@ class TestCase(unittest.TestCase):
         for user in users:
             user_repository.create_confirmed_user_FOR_TEST(user)
 
-
     def add_payments(self, payments, payment_repository=None):
         if payment_repository is None:
             payment_repository = PaymentRepository()
         for payment in payments:
             payment_repository.add_payment(payment)
+
+    def add_incoming_payments(self, incoming_payments, payment_repository=None):
+        if payment_repository is None:
+            payment_repository = PaymentRepository()
+        for incoming_payment in incoming_payments:
+            payment_repository.add_incoming_payment(incoming_payment)
