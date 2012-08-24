@@ -6,7 +6,11 @@ class User(db.Model):
     confirmation_code = db.StringProperty()
 
     def __str__(self):
-        return 'User<\nemail=%s\nstatus=%s\n>' % (self.email, self.status if hasattr(self, 'status') else 'NONE')
+        try:
+            key = self.key()
+        except db.NotSavedError:
+            key = 'NONE'
+        return 'User<\nemail=%s\nstatus=%s\nkey=%s\n>' % (self.email, self.status if hasattr(self, 'status') else 'NONE', key)
 
     def __eq__(self, other):
         return self.key() == other.key()

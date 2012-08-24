@@ -8,6 +8,10 @@ class UserRepository(object):
         user.confirmation_code = 'some code'
         user.put()
 
+    def create_confirmed_user_FOR_TEST(self, user):
+        user.status = UserStatus.VALID
+        user.put()
+
     def confirm_user(self, user, code):
         found_user = self.get_unconfirmed_user(user.email)
         if not hasattr(user, 'confirmation_code') or user.confirmation_code is None:
