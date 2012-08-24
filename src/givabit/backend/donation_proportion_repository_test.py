@@ -1,10 +1,8 @@
 import test_data
 import test_utils
 
-from charity_repository import CharityRepository
 from donation_proportion import DonationProportion
 from donation_proportion_repository import DonationProportionRepository
-from user_repository import UserRepository
 
 class DonationProportionRepositoryTest(test_utils.TestCase):
 

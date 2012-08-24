@@ -4,6 +4,7 @@ import unittest
 from charity_repository import CharityRepository
 from donation_proportion_repository import DonationProportionRepository
 from google.appengine.ext import testbed
+from payment_repository import PaymentRepository
 from user_repository import UserRepository
 
 class TestCase(unittest.TestCase):
@@ -34,3 +35,9 @@ class TestCase(unittest.TestCase):
         for user in users:
             user_repository.create_confirmed_user_FOR_TEST(user)
 
+
+    def add_payments(self, payments, payment_repository=None):
+        if payment_repository is None:
+            payment_repository = PaymentRepository()
+        for payment in payments:
+            payment_repository.add_payment(payment)

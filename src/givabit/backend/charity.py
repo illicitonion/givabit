@@ -9,3 +9,5 @@ class Charity(db.Model):
     def __eq__(self, other):
         return self.key() == other.key()
 
+    def __hash__(self):
+        return hash(self.key())
