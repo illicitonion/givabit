@@ -50,3 +50,6 @@ class DonationProportionRepositoryTest(test_utils.TestCase):
             DonationProportion.new(user=test_data.u2, charity=test_data.c1, amount=1),
         ], dp_repo)
         self.assertEquals(0.5, dp_repo.get_fraction(user=test_data.u1, charity=test_data.c1))
+
+    def test_adding_donation_proportion_updates_payments(self):
+        pass

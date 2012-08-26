@@ -26,6 +26,7 @@ class IncomingPayment(db.Model):
 class OutgoingPayment(db.Model):
     charity = db.ReferenceProperty(Charity)
     amount_GBPennies = db.IntegerProperty()
+    status = db.IntegerProperty()
 
     @classmethod
     def new(cls, **kwargs):
@@ -33,16 +34,17 @@ class OutgoingPayment(db.Model):
         return OutgoingPayment(**kwargs)
 
     def __str__(self):
-        return "OutgoingPayment<\ncharity=%s\namount_GBPennies=%s\n>" % (self.charity, self.amount_GBPennies)
+        return "OutgoingPayment<\ncharity=%s\namount_GBPennies=%s\nstatus=%s\n>" % (self.charity, self.amount_GBPennies, self.status)
 
     def __repr__(self):
         return str(self)
 
     def __eq__(self, other):
-        return self.charity == other.charity and self.amount_GBPennies == other.amount_GBPennies
+        return self.charity == other.charity and self.amount_GBPennies == other.amount_GBPennies and self.status == other.status
 
     def __hash__(self):
-        return hash(self.charity) ^ hash(self.amount_GBPennies)
+        return hash(self.charity) ^ hash(self.amount_GBPennies) ^ hash(self.status)
 
 class OutgoingPaymentState:
     DISPLAYED = 1  # Indicates a payment has been shown on a screen, so someone may be actioning it
+    VALUE_MISMATCH = 2  # Indicates a mismatch between incoming payments, and outgoing payments, leading to this payment not being ready to be sent

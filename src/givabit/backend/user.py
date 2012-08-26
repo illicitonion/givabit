@@ -12,6 +12,9 @@ class User(db.Model):
             key = 'NONE'
         return 'User<\nemail=%s\nstatus=%s\nkey=%s\n>' % (self.email, self.status if hasattr(self, 'status') else 'NONE', key)
 
+    def __repr__(self):
+        return str(self)
+
     def __eq__(self, other):
         return self.key() == other.key()
 
