@@ -1,5 +1,10 @@
-from user import User, UserStatus
+import hashlib
+
+from user import Password, User, UserStatus
 from errors import IllegalStateException, MissingValueException, MultipleValueException
+
+#TODO: Throttle attempts by source and account
+#TODO: bcrypt/similar
 
 class UserRepository(object):
     def create_unconfirmed_user(self, user):
@@ -29,8 +34,28 @@ class UserRepository(object):
         # Gets a user whose account is currently active
         return self._get_user(email, lambda q: q.filter('status =', UserStatus.VALID))
 
-    def _get_user(self, email, filter):
+    def set_password(self, email, password):
+        salt = self._generate_salt()
+        Password(email=email, salt=salt, hash=self._hash(password, salt), user=self._get_user(email=email)).put()
+
+    def authenticate(self, email, password):
+        stored = Password.all().filter('email =', email).get()
+        if stored is None:
+            raise MissingValueException('No user with email %s present' % email)
+        if self._hash(password, stored.salt) == stored.hash:
+            return stored.user
+        raise MissingValueException('Incorrect password for email %s' % email)
+
+    def _generate_salt(self):
+        return 'salt'
+
+    def _hash(self, password, salt):
+        return hashlib.sha512(password + salt).hexdigest()
+
+    def _get_user(self, email, filter=None):
         # filter : lambda (query -> query)
+        if filter is None:
+            filter = lambda f: f
         users = [user for user in filter(User.all().filter('email =', email)).run()]
         count = len(users)
         if count == 1:

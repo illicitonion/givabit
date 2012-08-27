@@ -25,3 +25,9 @@ class User(db.Model):
 class UserStatus:
     VALID = 1
     UNCONFIRMED = 2
+
+class Password(db.Model):
+    email = db.EmailProperty()
+    salt = db.StringProperty()
+    hash = db.StringProperty()
+    user = db.ReferenceProperty(User)
