@@ -21,7 +21,7 @@ class TestCase(unittest.TestCase):
         self.charity_repo = CharityRepository()
         self.da_repo = DonationAmountRepository()
         self.dp_repo = DonationProportionRepository()
-        self.payment_repo = PaymentRepository()
+        self.payment_repo = PaymentRepository(self.dp_repo)
         self.user_repo = UserRepository()
 
     def tearDown(self):

@@ -3,12 +3,15 @@ from google.appengine.ext import db
 from payment import IncomingPayment, OutgoingPayment, OutgoingPaymentState, Payment
 
 class PaymentRepository(object):
+    def __init__(self, donation_proportion_repository):
+        self.donation_proportion_repository = donation_proportion_repository
+
     def add_incoming_payment(self, incoming_payment):
         incoming_payment.put()
 
-    def get_next_expected_payments(self, user, donation_proportion_repository):
+    def get_next_expected_payments(self, user):
         """Gets the outgoing payments expected to be made when user makes their next full incoming payment."""
-        donation_proportions = donation_proportion_repository.get_donation_proportions(user=user)
+        donation_proportions = self.donation_proportion_repository.get_donation_proportions(user=user)
         total_amount_GBPennies = user.donation_amount
         total_proportions = reduce(lambda total, proportion: total + proportion.amount,
                                    donation_proportions,
@@ -16,7 +19,7 @@ class PaymentRepository(object):
         return map(lambda dp: Payment(charity=dp.charity, user=user, amount_GBPennies=total_amount_GBPennies * dp.amount / total_proportions),
                    donation_proportions)
 
-    def get_pending_outgoing_payments(self, donation_proportion_repository, amount_mismatch_notifiers=None):
+    def get_pending_outgoing_payments(self, amount_mismatch_notifiers=None):
         """Gets outgoing payments for which incoming payments have been received (i.e. which are ready to be sent to charities).
 
         As a side effect, notifies any passed amount_mismatch_notifiers of any incoming/outgoing payment mismatches, i.e. incoming payments with insufficient outgoing payments pending, and outgoing payments with insufficient incoming payments pending.
@@ -24,7 +27,7 @@ class PaymentRepository(object):
         if amount_mismatch_notifiers is None:
             amount_mismatch_notifiers = []
 
-        all_donation_proportions = donation_proportion_repository.get_donation_proportions()
+        all_donation_proportions = self.donation_proportion_repository.get_donation_proportions()
 
         donation_proportions_by_user = self._index(lambda dp: dp.user, all_donation_proportions)
 

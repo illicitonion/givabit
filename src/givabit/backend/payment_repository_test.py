@@ -30,7 +30,7 @@ class PaymentRepositoryTest(test_utils.TestCase):
             OutgoingPayment(charity=test_data.c2, amount_GBPennies=150, status=OutgoingPaymentState.DISPLAYED),
         ])
 
-        self.assertEquals(self.payment_repo.get_pending_outgoing_payments(self.dp_repo), expected)
+        self.assertEquals(self.payment_repo.get_pending_outgoing_payments(), expected)
 
     def test_only_generates_outgoing_payments_if_incoming_payments_received(self):
         self.setup_one_incoming_payment({test_data.u1: 250})
@@ -47,7 +47,7 @@ class PaymentRepositoryTest(test_utils.TestCase):
             OutgoingPayment(charity=test_data.c2, amount_GBPennies=150, status=OutgoingPaymentState.DISPLAYED),
         ])
 
-        self.assertEquals(self.payment_repo.get_pending_outgoing_payments(donation_proportion_repository=self.dp_repo), expected)
+        self.assertEquals(self.payment_repo.get_pending_outgoing_payments(), expected)
 
     def test_logs_and_notifies_incoming_and_outgoing_mismatches(self):
         self.setup_one_mismatched_incoming_payment({
@@ -67,7 +67,7 @@ class PaymentRepositoryTest(test_utils.TestCase):
         ])
 
         amount_mismatch_notifier = AccumulatingMismatchNotifier()
-        self.payment_repo.get_pending_outgoing_payments(donation_proportion_repository=self.dp_repo, amount_mismatch_notifiers=[amount_mismatch_notifier])
+        self.payment_repo.get_pending_outgoing_payments(amount_mismatch_notifiers=[amount_mismatch_notifier])
 
         expected = set([
             AmountMismatch(user=test_data.u1, incoming_GBPennies=249, outgoing=[
@@ -99,7 +99,7 @@ class PaymentRepositoryTest(test_utils.TestCase):
         ])
 
         amount_mismatch_notifier = AccumulatingMismatchNotifier()
-        self.assertEquals(self.payment_repo.get_pending_outgoing_payments(donation_proportion_repository=self.dp_repo, amount_mismatch_notifiers=[amount_mismatch_notifier]), expected)
+        self.assertEquals(self.payment_repo.get_pending_outgoing_payments(amount_mismatch_notifiers=[amount_mismatch_notifier]), expected)
         self.assertEquals(amount_mismatch_notifier.accumulated, expected_notifications)
 
     def test_adding_donation_proportion_adds_payments_if_amount_set_first(self):
@@ -108,7 +108,7 @@ class PaymentRepositoryTest(test_utils.TestCase):
         self.dp_repo.add_donation_proportion(DonationProportion.new(user=test_data.u1, charity=test_data.c1, amount=2))
         expected = [Payment(user=test_data.u1, charity=test_data.c1, amount_GBPennies=100)]
 
-        self.assertEquals(self.payment_repo.get_next_expected_payments(user=test_data.u1, donation_proportion_repository=self.dp_repo), expected)
+        self.assertEquals(self.payment_repo.get_next_expected_payments(user=test_data.u1), expected)
 
         self.dp_repo.add_donation_proportion(DonationProportion.new(user=test_data.u1, charity=test_data.c2, amount=3))
         expected = [
@@ -116,4 +116,4 @@ class PaymentRepositoryTest(test_utils.TestCase):
             Payment(user=test_data.u1, charity=test_data.c2, amount_GBPennies=60),
         ]
 
-        self.assertEquals(self.payment_repo.get_next_expected_payments(user=test_data.u1, donation_proportion_repository=self.dp_repo), expected)
+        self.assertEquals(self.payment_repo.get_next_expected_payments(user=test_data.u1), expected)
