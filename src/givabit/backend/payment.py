@@ -2,22 +2,27 @@ from charity import Charity
 from google.appengine.ext import db
 from user import User
 
-class Payment(db.Model):
+class Payment(object):
     """Represents a payment from a user to a charity.
 
-    This payment is a translation of a DonationProportion in to money terms.  It gets aggregated with other Payments in to an OutgoingPayment for actual payment to charities.  It is also reported to a user as a historical payment they have made.
-
-    The primary reason for this class is to build a strongly-consistent secondary index, aggregating payments by charity (as the primary strongly-consistent index aggregates by user).  The idea is: The common case for wanting to create, update or delete parts of donations is for a user to be editing their preferences, so that is an importantly strongly-consistent group; a more rare, and less time-sensitive case (but needing strong consistency) is calculating outgoing payments; having this strongly-consistently indexed by charity makes the process a whole lot easier, at the cost of transactional double writes on edits.
-
-    Payment's constructor should never be called directly, rather the Payment.new static factory should always be used.
+    This payment is a translation of a DonationProportion in to money terms.  It gets aggregated with other Payments in to an OutgoingPayment for actual payment to charities.
     """
-    charity = db.ReferenceProperty(Charity)
-    user = db.ReferenceProperty(User)
-    amount_GBPennies = db.IntegerProperty()
+    def __init__(self, charity, user, amount_GBPennies):
+        self.charity = charity
+        self.user = user
+        self.amount_GBPennies = amount_GBPennies
 
-    @classmethod
-    def new(cls, charity, **kwargs):
-        return Payment(parent=charity, charity=charity, **kwargs)
+    def __str__(self):
+        return "Payment<\ncharity=%s\nuser=%s\namount_GBPennies=%s\n>" % (self.charity, self.user, self.amount_GBPennies)
+
+    def __repr__(self):
+        return str(self)
+
+    def __eq__(self, other):
+        return self.charity == other.charity and self.user == other.user and self.amount_GBPennies == other.amount_GBPennies
+
+    def __hash__(self):
+        return hash(self.charity) ^ hash(self.user) ^ hash(self.amount_GBPennies)
 
 class IncomingPayment(db.Model):
     user = db.ReferenceProperty(User)

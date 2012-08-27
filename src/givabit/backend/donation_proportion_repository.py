@@ -1,13 +1,15 @@
 from donation_proportion import DonationProportion
 from google.appengine.ext import db
+from payment import Payment
 from user import User
 
 class DonationProportionRepository(object):
-    @db.transactional
+    @db.transactional(xg=True)  #TODO: This shouldn't be xg
     def add_donation_proportion(self, donation_proportion):
         existing = self.get_donation_proportions(user=donation_proportion.user, charity=donation_proportion.charity)
         db.delete(existing)
-        donation_proportion.put()
+        if donation_proportion.amount > 0:
+            donation_proportion.put()
 
     def get_fraction(self, user, charity):
         """Gets the fraction of user's donation that should go to charity charity."""
