@@ -61,11 +61,11 @@ class PaymentRepository(object):
             outgoing_payment.put()
             outgoing_payments.add(outgoing_payment)
 
-        self.notify_mismatches(amount_mismatch_notifiers, problem_users, incoming_payments_by_user, donation_proportions_by_user)
+        self.notify_mismatches(amount_mismatch_notifiers, problem_users, incoming_payments_by_user, donation_proportions_by_user, users_to_payment_amounts)
 
         return outgoing_payments
 
-    def notify_mismatches(self, amount_mismatch_notifiers, users, incoming_payments_by_user, donation_proportions_by_user):
+    def notify_mismatches(self, amount_mismatch_notifiers, users, incoming_payments_by_user, donation_proportions_by_user, users_to_payment_amounts):
         """Notifies all amount_mismatch_notifiers of all amount mismatches.
 
         Args:
@@ -73,20 +73,15 @@ class PaymentRepository(object):
         invalid_payments_by_user: {user: [OutgoingPayment]}
         not_paid_up_users: {user: incoming_amount}
         """
-        # TODO: This logic really shouldn't live here, or duplicate as much as it does
+        # TODO: This logic really shouldn't live here
         mismatches = []
         for user in users:
+            (amount_paid_in, amount_to_pay_out, total_proportions) = users_to_payment_amounts[user]
             incoming_payments_by_user.setdefault(user, [])
-            incoming_GBPennies = reduce(lambda total, ip: total + ip.amount_GBPennies,
-                                        incoming_payments_by_user[user],
-                                        0)
-            donation_proportions_by_user.setdefault(user, [])
-            total_proportions = reduce(lambda total, proportion: total + proportion.amount,
-                                       donation_proportions_by_user[user],
-                                       0)
-            outgoing_payments = map(lambda dp: OutgoingPayment.new(charity=dp.charity, amount_GBPennies=user.donation_amount * dp.amount / total_proportions, status=OutgoingPaymentState.VALUE_MISMATCH),
-                                    donation_proportions_by_user[user])
-            mismatches.append(AmountMismatch(user=user, incoming_GBPennies=incoming_GBPennies, outgoing=outgoing_payments))
+            donation_proportions = donation_proportions_by_user[user] if user in donation_proportions_by_user else []
+            outgoing_payments = map(lambda dp: OutgoingPayment.new(charity=dp.charity, amount_GBPennies=amount_to_pay_out * dp.amount / total_proportions, status=OutgoingPaymentState.VALUE_MISMATCH),
+                                    donation_proportions)
+            mismatches.append(AmountMismatch(user=user, incoming_GBPennies=amount_paid_in, outgoing=outgoing_payments))
 
 
         for notifier in amount_mismatch_notifiers:
