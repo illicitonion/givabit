@@ -1,4 +1,6 @@
 import hashlib
+import os
+import uuid
 
 from user import Password, User, UserStatus
 from errors import IllegalStateException, MissingValueException, MultipleValueException
@@ -16,7 +18,7 @@ class UserRepository(object):
     def create_unconfirmed_user(self, user):
         # Creates a user whose account cannot be used without confirmation
         user.status = UserStatus.UNCONFIRMED
-        user.confirmation_code = 'some code'
+        user.confirmation_code = self._generate_confirmation_code()
         user.put()
 
     def create_confirmed_user_FOR_TEST(self, user):
@@ -60,7 +62,10 @@ class UserRepository(object):
         raise BadLoginException('Incorrect password for email %s' % email)
 
     def _generate_salt(self):
-        return 'salt'
+        return os.urandom(18).encode('base_64').strip()
+
+    def _generate_confirmation_code(self):
+        return str(uuid.uuid4())
 
     def _hash(self, password, salt):
         return hashlib.sha512(password + salt).hexdigest()

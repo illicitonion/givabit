@@ -72,11 +72,19 @@ class UserRepositoryTest(test_utils.TestCase):
         self.user_repo.set_password(email=new_user.email, password=password, confirmation_code=new_user.confirmation_code)
         self._assert_can_log_in(new_user, password)
 
-    def test_sequential_users_probably_get_different_salt(self):
-        pass
+    def test_users_probably_get_different_safe_salt(self):
+        salts = set()
+        for _ in range(1000):
+            salt = self.user_repo._generate_salt()
+            self.assertNotIn('\n', salt)
+            salts.add(salt)
+        self.assertGreaterEqual(len(salts), 999)
 
     def test_sequential_users_probably_get_different_confirmation_codes(self):
-        pass
+        confirmation_codes = set()
+        for _ in range(1000):
+            confirmation_codes.add(self.user_repo._generate_confirmation_code())
+        self.assertGreaterEqual(len(confirmation_codes), 999)
 
     def test_cannot_set_password_without_confirmation_code_if_unconfirmed(self):
         pass
