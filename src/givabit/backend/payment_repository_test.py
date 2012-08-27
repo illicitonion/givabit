@@ -20,9 +20,9 @@ class PaymentRepositoryTest(test_utils.TestCase):
         })
 
         self.add_donation_proportions([
-            DonationProportion(user=test_data.u1, charity=test_data.c1, amount=100),
-            DonationProportion(user=test_data.u1, charity=test_data.c2, amount=150),
-            DonationProportion(user=test_data.u2, charity=test_data.c1, amount=75),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c1, amount=100),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c2, amount=150),
+            DonationProportion.new(user=test_data.u2, charity=test_data.c1, amount=75),
         ])
 
         expected = set([
@@ -37,9 +37,9 @@ class PaymentRepositoryTest(test_utils.TestCase):
         self.setup_one_missing_payment({test_data.u2: 75})
 
         self.add_donation_proportions([
-            DonationProportion(user=test_data.u1, charity=test_data.c1, amount=100),
-            DonationProportion(user=test_data.u1, charity=test_data.c2, amount=150),
-            DonationProportion(user=test_data.u2, charity=test_data.c1, amount=75),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c1, amount=100),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c2, amount=150),
+            DonationProportion.new(user=test_data.u2, charity=test_data.c1, amount=75),
         ])
 
         expected = set([
@@ -59,11 +59,11 @@ class PaymentRepositoryTest(test_utils.TestCase):
         self.setup_one_missing_payment({test_data.u3: 10})
 
         self.add_donation_proportions([
-            DonationProportion(user=test_data.u1, charity=test_data.c1, amount=100),
-            DonationProportion(user=test_data.u1, charity=test_data.c2, amount=150),
-            DonationProportion(user=test_data.u2, charity=test_data.c1, amount=250),
-            DonationProportion(user=test_data.u3, charity=test_data.c1, amount=10),
-            DonationProportion(user=test_data.u5, charity=test_data.c1, amount=75),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c1, amount=100),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c2, amount=150),
+            DonationProportion.new(user=test_data.u2, charity=test_data.c1, amount=250),
+            DonationProportion.new(user=test_data.u3, charity=test_data.c1, amount=10),
+            DonationProportion.new(user=test_data.u5, charity=test_data.c1, amount=75),
         ])
 
         amount_mismatch_notifier = AccumulatingMismatchNotifier()
@@ -88,7 +88,7 @@ class PaymentRepositoryTest(test_utils.TestCase):
         })
 
         self.add_donation_proportions([
-            DonationProportion(user=test_data.u1, charity=test_data.c1, amount=100),
+            DonationProportion.new(user=test_data.u1, charity=test_data.c1, amount=100),
         ])
 
         expected = set([

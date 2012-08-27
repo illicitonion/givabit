@@ -4,7 +4,7 @@ from payment import Payment
 from user import User
 
 class DonationProportionRepository(object):
-    @db.transactional(xg=True)  #TODO: This shouldn't be xg
+    @db.transactional
     def add_donation_proportion(self, donation_proportion):
         existing = self.get_donation_proportions(user=donation_proportion.user, charity=donation_proportion.charity)
         db.delete(existing)
