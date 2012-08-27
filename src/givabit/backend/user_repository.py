@@ -9,6 +9,9 @@ from errors import IllegalStateException, MissingValueException, MultipleValueEx
 class IncorrectConfirmationCodeException(Exception):
     pass
 
+class BadLoginException(Exception):
+    pass
+
 class UserRepository(object):
     def create_unconfirmed_user(self, user):
         # Creates a user whose account cannot be used without confirmation
@@ -51,10 +54,10 @@ class UserRepository(object):
     def authenticate(self, email, password):
         stored = Password.all().filter('email =', email).get()
         if stored is None:
-            raise MissingValueException('No user with email %s present' % email)
+            raise BadLoginException('No user with email %s present' % email)
         if self._hash(password, stored.salt) == stored.hash:
             return stored.user
-        raise MissingValueException('Incorrect password for email %s' % email)
+        raise BadLoginException('Incorrect password for email %s' % email)
 
     def _generate_salt(self):
         return 'salt'
