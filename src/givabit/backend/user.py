@@ -31,3 +31,7 @@ class Password(db.Model):
     salt = db.StringProperty()
     hash = db.StringProperty()
     user = db.ReferenceProperty(User)
+
+    @classmethod
+    def new(cls, user, **kwargs):
+        return Password(parent=user, user=user, **kwargs)

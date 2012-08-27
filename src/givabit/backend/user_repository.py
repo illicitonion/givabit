@@ -2,8 +2,9 @@ import hashlib
 import os
 import uuid
 
+from errors import IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
+from google.appengine.ext import db
 from user import Password, User, UserStatus
-from errors import IllegalStateException, MissingValueException, MultipleValueException
 
 #TODO: Throttle attempts by source and account
 #TODO: bcrypt/similar
@@ -28,7 +29,7 @@ class UserRepository(object):
     def confirm_user(self, user, code):
         found_user = self.get_unconfirmed_user(user.email)
         if not hasattr(user, 'confirmation_code') or user.confirmation_code is None:
-            raise IllegalStateException('Cannot re-confirm already-confirmed user %s' % user)
+            raise IllegalArgumentException('Cannot re-confirm already-confirmed user %s' % user)
         if found_user.confirmation_code == code:
             user.status = UserStatus.VALID
             user.put()
@@ -43,15 +44,25 @@ class UserRepository(object):
         # Gets a user whose account is currently active
         return self._get_user(email, lambda q: q.filter('status =', UserStatus.VALID))
 
-    def set_password(self, email, password, confirmation_code=None):
+    def set_password(self, email, password, confirmation_code=None, old_password=None):
         user = None
         if confirmation_code is not None:
             user = self.get_unconfirmed_user(email=email)
             self.confirm_user(user=user, code=confirmation_code)
+        elif old_password is not None:
+            user = self.authenticate(email=email, password=old_password)
+
         if user is None:
-            raise IllegalStateException('Must provide either confirmation code or existing password to change password for user %s' % user)
+            raise IllegalArgumentException('Must provide either confirmation code or existing password to change password for user %s' % user)
+
         salt = self._generate_salt()
-        Password(email=email, salt=salt, hash=self._hash(password, salt), user=self._get_user(email=email)).put()
+        user.confirmation_code = None
+        user.put()
+
+        def update_password():
+            db.delete([p for p in Password.all().ancestor(user).run()])
+            Password.new(email=email, salt=salt, hash=self._hash(password, salt), user=user).put()
+        db.run_in_transaction(update_password)
 
     def authenticate(self, email, password):
         stored = Password.all().filter('email =', email).get()

@@ -1,3 +1,6 @@
+class IllegalArgumentException(Exception):
+    pass
+
 class IllegalStateException(Exception):
     pass
 
