@@ -102,7 +102,7 @@ class PaymentRepository(object):
             xs: x[]
 
         Return:
-            dict{y: x}
+            dict{y: x[]}
         """
         ys = {}
         for x in xs:
