@@ -96,30 +96,6 @@ class PaymentRepository(object):
     def get_incoming_payments(self):
         return [ip for ip in IncomingPayment.all().run()]
 
-    def _get_users_by_paid_up_status(self):
-        # Returns ([paid_up_user], {not_paid_up_user: incoming_total})
-        #TODO: Investigate caching Payment.all(), or something, because reading through the whole thing twice per get_pending_outgoing_payments sucks
-        incoming_payments_by_user = {}
-        for incoming_payment in IncomingPayment.all().run():
-            already = 0
-            if incoming_payment.user in incoming_payments_by_user:
-                already = incoming_payments_by_user[incoming_payment.user][0]
-            amount = already + incoming_payment.amount_GBPennies
-            incoming_payments_by_user[incoming_payment.user] = (amount, amount)
-
-        for outgoing_payment in Payment.all().run():
-            if outgoing_payment.user in incoming_payments_by_user:
-                already = incoming_payments_by_user[outgoing_payment.user]
-                incoming_payments_by_user[outgoing_payment.user] = (already[0], already[1] - outgoing_payment.amount_GBPennies)
-
-        paid_up_users, not_paid_up_users = [], {}
-        for user in incoming_payments_by_user.keys():
-            if incoming_payments_by_user[user][1] == 0:
-                paid_up_users.append(user)
-            else:
-                not_paid_up_users[user] = incoming_payments_by_user[user][0]
-        return (paid_up_users, not_paid_up_users)
-
     def _index(self, fn, xs):
         """Takes a list of xs and creates a dict of xs indexed by fn(x).
 
