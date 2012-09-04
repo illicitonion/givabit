@@ -1,9 +1,9 @@
-import test_data
-import test_utils
+from givabit.backend.amount_mismatch import AccumulatingMismatchNotifier, AmountMismatch
+from givabit.backend.donation_proportion import DonationProportion
+from givabit.backend.payment import IncomingPayment, OutgoingPayment, OutgoingPaymentState, Payment
 
-from amount_mismatch import AccumulatingMismatchNotifier, AmountMismatch
-from donation_proportion import DonationProportion
-from payment import IncomingPayment, OutgoingPayment, OutgoingPaymentState, Payment
+from givabit.test_common import test_data
+from givabit.test_common import test_utils
 
 class PaymentRepositoryTest(test_utils.TestCase):
 

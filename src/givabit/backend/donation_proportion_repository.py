@@ -1,7 +1,8 @@
-from donation_proportion import DonationProportion
+from givabit.backend.donation_proportion import DonationProportion
+from givabit.backend.payment import Payment
+from givabit.backend.user import User
+
 from google.appengine.ext import db
-from payment import Payment
-from user import User
 
 class DonationProportionRepository(object):
     @db.transactional

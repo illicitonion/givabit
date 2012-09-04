@@ -1,5 +1,5 @@
-from charity import Charity
-from errors import MissingValueException, MultipleValueException
+from givabit.backend.charity import Charity
+from givabit.backend.errors import MissingValueException, MultipleValueException
 
 class CharityRepository(object):
     def list_charities(self):

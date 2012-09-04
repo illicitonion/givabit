@@ -1,14 +1,16 @@
-import test_data
 import unittest
 
-from charity_repository import CharityRepository
-from donation_amount_repository import DonationAmountRepository
-from donation_proportion_repository import DonationProportionRepository
+from givabit.backend.charity_repository import CharityRepository
+from givabit.backend.donation_amount_repository import DonationAmountRepository
+from givabit.backend.donation_proportion_repository import DonationProportionRepository
+from givabit.backend.payment import IncomingPayment
+from givabit.backend.payment_repository import PaymentRepository
+from givabit.backend.user_repository import UserRepository
+
+from givabit.test_common import test_data
+
 from google.appengine.datastore import datastore_stub_util
 from google.appengine.ext import testbed
-from payment import IncomingPayment
-from payment_repository import PaymentRepository
-from user_repository import UserRepository
 
 class TestCase(unittest.TestCase):
     def setUp(self):

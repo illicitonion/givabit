@@ -1,6 +1,7 @@
-from amount_mismatch import AmountMismatch
+from givabit.backend.amount_mismatch import AmountMismatch
+from givabit.backend.payment import IncomingPayment, OutgoingPayment, OutgoingPaymentState, Payment
+
 from google.appengine.ext import db
-from payment import IncomingPayment, OutgoingPayment, OutgoingPaymentState, Payment
 
 class PaymentRepository(object):
     def __init__(self, donation_proportion_repository):

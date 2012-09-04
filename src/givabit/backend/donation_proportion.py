@@ -1,6 +1,7 @@
-from charity import Charity
+from givabit.backend.charity import Charity
+from givabit.backend.user import User
+
 from google.appengine.ext import db
-from user import User
 
 class DonationProportion(db.Model):
     """ Represents a proportion of a donation to a charity by a user.

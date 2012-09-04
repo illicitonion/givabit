@@ -1,15 +1,15 @@
-import test_utils
+from givabit.backend.errors import IllegalArgumentException, MissingValueException
+from givabit.backend.user import User, UserStatus
+from givabit.backend.user_repository import BadLoginException, IncorrectConfirmationCodeException
 
-from errors import IllegalArgumentException, MissingValueException
-from user import User, UserStatus
-from user_repository import BadLoginException, IncorrectConfirmationCodeException
+from givabit.test_common import test_utils
 
 class UserRepositoryTest(test_utils.TestCase):
     def test_creates_unconfirmed_user(self):
         email = 'someone@foo.com'
         new_user = User(email=email)
-
         self.user_repo.create_unconfirmed_user(new_user)
+
         self.assertRaises(MissingValueException, lambda: self.user_repo.get_user(email))
         returned_user = self.user_repo.get_unconfirmed_user(email)
         self.assertEquals(returned_user.email, email)

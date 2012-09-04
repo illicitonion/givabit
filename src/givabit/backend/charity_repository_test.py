@@ -1,8 +1,8 @@
-import test_data
-import test_utils
+from givabit.backend.charity import Charity
+from givabit.backend.errors import MissingValueException, MultipleValueException
 
-from charity import Charity
-from errors import MissingValueException, MultipleValueException
+from givabit.test_common import test_data
+from givabit.test_common import test_utils
 
 class CharityRepositoryTest(test_utils.TestCase):
     def setUp(self):

@@ -1,5 +1,6 @@
+from givabit.backend.user import User
+
 from google.appengine.ext import db
-from user import User
 
 class DonationAmount(db.Model):
     user = db.ReferenceProperty(User)

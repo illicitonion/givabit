@@ -1,8 +1,8 @@
-import test_data
-import test_utils
+from givabit.backend.donation_proportion import DonationProportion
+from givabit.backend.payment import Payment
 
-from donation_proportion import DonationProportion
-from payment import Payment
+from givabit.test_common import test_data
+from givabit.test_common import test_utils
 
 class DonationProportionRepositoryTest(test_utils.TestCase):
 

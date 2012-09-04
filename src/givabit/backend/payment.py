@@ -1,6 +1,7 @@
-from charity import Charity
+from givabit.backend.charity import Charity
+from givabit.backend.user import User
+
 from google.appengine.ext import db
-from user import User
 
 class Payment(object):
     """Represents a payment from a user to a charity.

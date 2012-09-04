@@ -2,9 +2,10 @@ import hashlib
 import os
 import uuid
 
-from errors import IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
+from givabit.backend.errors import IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
+from givabit.backend.user import Password, User, UserStatus
+
 from google.appengine.ext import db
-from user import Password, User, UserStatus
 
 #TODO: Throttle attempts by source and account
 #TODO: bcrypt/similar
