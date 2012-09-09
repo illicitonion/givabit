@@ -1,16 +1,24 @@
 import unittest
+import uuid
 
 from givabit.backend.charity_repository import CharityRepository
 from givabit.backend.donation_amount_repository import DonationAmountRepository
 from givabit.backend.donation_proportion_repository import DonationProportionRepository
 from givabit.backend.payment import IncomingPayment
 from givabit.backend.payment_repository import PaymentRepository
+from givabit.backend.session_repository import SessionRepository
+from givabit.backend.user import User
 from givabit.backend.user_repository import UserRepository
 
 from givabit.test_common import test_data
 
 from google.appengine.datastore import datastore_stub_util
 from google.appengine.ext import testbed
+
+class TestUser(object):
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
 
 class TestCase(unittest.TestCase):
     def setUp(self):
@@ -25,6 +33,7 @@ class TestCase(unittest.TestCase):
         self.dp_repo = DonationProportionRepository()
         self.payment_repo = PaymentRepository(self.dp_repo)
         self.user_repo = UserRepository()
+        self.session_repo = SessionRepository(self.user_repo)
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -40,6 +49,15 @@ class TestCase(unittest.TestCase):
     def add_confirmed_users(self, users):
         for user in users:
             self.user_repo.create_confirmed_user_FOR_TEST(user)
+
+    def create_ready_to_use_user(self):
+        email = '%s@%s.com' % (uuid.uuid4(), TestCase.get_and_increment_random_index())
+        password = str(uuid.uuid4())
+        new_user = User(email=email)
+        self.user_repo.create_unconfirmed_user(new_user)
+        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
+        self.user_repo.set_password(email=new_user.email, password=password, confirmation_code=new_user.confirmation_code)
+        return TestUser(email, password)
 
     def add_payments(self, payments, payment_repository=None):
         for payment in payments:
@@ -64,3 +82,10 @@ class TestCase(unittest.TestCase):
         # users_and_amounts: {user: amount}
         for (user, amount) in users_to_payments.items():
             self.da_repo.set_donation_amount(user=user, amount_GBPennies=amount)
+
+    @classmethod
+    def get_and_increment_random_index(cls):
+        if not hasattr(cls, 'random_index'):
+            cls.random_index = -1
+        cls.random_index += 1
+        return cls.random_index
