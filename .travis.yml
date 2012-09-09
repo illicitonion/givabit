@@ -1,5 +1,7 @@
 language: python
 python: "2.7"
-#install: "basedir=$(pwd) ; for f in ${basedir}/lib/setups/*/setup.py ; do cd $(dirname $f) ; python $(basename $f) install &> /dev/null || if [[ $? -ne 0 ]] ; then echo \"Failed to install $f\" && exit -1 ; fi ; done ; cd $basedir"
-install: "true"
-script: "./run_tests.py"
+install: "basedir=$(pwd) ; for f in ${basedir}/lib/packages/*/setup.py ; do cd $(dirname $f) ; python $(basename $f) install &> /dev/null || if [[ $? -ne 0 ]] ; then echo \"Failed to install $f\" && exit -1 ; fi ; done ; cd $basedir"
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+script: "./run_tests.py && ./run_ui_tests.py"

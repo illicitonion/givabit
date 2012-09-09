@@ -1,1 +1,4 @@
-sdks/google_appengine_1.7.1 http://googleappengine.googlecode.com/files/google_appengine_1.7.1.zip
+sdks/google_appengine_1.7.1 http://googleappengine.googlecode.com/files/google_appengine_1.7.1.zip # chmod 755 sdks/google_appengine_1.7.1/google_appengine/google/appengine/tools/dev_appserver.py
+packages/selenium-2.25.0 http://pypi.python.org/packages/source/s/selenium/selenium-2.25.0.tar.gz#md5=9b799caef8fe32e50094ff78f856265a
+misc/chromedriver/linux_32_23.0.1240.0 https://chromedriver.googlecode.com/files/chromedriver_linux32_23.0.1240.0.zip
+misc/chromedriver/mac_23.0.1240.0 https://chromedriver.googlecode.com/files/chromedriver_mac_23.0.1240.0.zip
