@@ -43,6 +43,8 @@ class TestCase(test_utils.TestCase):
     def _get_chromedriver(self):
         if sys.platform == 'darwin':
             trailing_path = 'mac'
+        elif sys.platform == 'linux2':
+            trailing_path = 'linux_32'
         else:
             raise Exception('Did not know where chromedriver was for platform: %s' % sys.platform)
         return self._get_path_from_root(os.path.join('lib', 'misc', 'chromedriver', trailing_path))
