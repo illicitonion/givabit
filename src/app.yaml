@@ -1,5 +1,5 @@
 application: givabit-dev
-version: 2
+version: 3
 runtime: python27
 threadsafe: no
 api_version: 1
@@ -10,6 +10,8 @@ handlers:
 
 - url: /.*
   script: givabit/webapp/webapp.py
+  secure: always
+  login: admin # Dev config
 
 builtins:
 # For test
