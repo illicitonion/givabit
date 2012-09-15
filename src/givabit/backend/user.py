@@ -35,3 +35,9 @@ class Password(db.Model):
     @classmethod
     def new(cls, user, **kwargs):
         return Password(parent=user, user=user, **kwargs)
+
+    def __str__(self):
+        return 'Password<\nemail=%s\nsalt=%s\nhash=%s\nuser=%s\n>' % (self.email, self.salt, self.hash, self.user)
+
+    def __repr__(self):
+        return str(self)

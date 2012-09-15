@@ -4,6 +4,7 @@ import uuid
 
 from givabit.backend.errors import IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
 from givabit.backend.user import Password, User, UserStatus
+from givabit.backend.utils import transactionally
 
 from google.appengine.ext import db
 
@@ -63,7 +64,7 @@ class UserRepository(object):
         def update_password():
             db.delete([p for p in Password.all().ancestor(user).run()])
             Password.new(email=email, salt=salt, hash=self._hash(password, salt), user=user).put()
-        db.run_in_transaction(update_password)
+        transactionally(update_password)
 
     def authenticate(self, email, password):
         stored = Password.all().filter('email =', email).get()

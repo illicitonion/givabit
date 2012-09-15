@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import os
+os.environ['SKIP_TRANSACTIONS_FOR_TEST'] = 'true'
+
 import sys
 sys.path.append('lib/sdks/google_appengine_1.7.1/google_appengine')
 sys.path.append('src')

@@ -23,10 +23,7 @@ class TestUser(object):
 class TestCase(unittest.TestCase):
     def setUp(self):
         reload(test_data)
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
-        policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
-        self.testbed.init_datastore_v3_stub(consistency_policy=policy)
+        self.set_up_database()
 
         self.charity_repo = CharityRepository()
         self.da_repo = DonationAmountRepository()
@@ -36,6 +33,15 @@ class TestCase(unittest.TestCase):
         self.session_repo = SessionRepository(self.user_repo)
 
     def tearDown(self):
+        self.tear_down_database()
+
+    def set_up_database(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
+        self.testbed.init_datastore_v3_stub(consistency_policy=policy)
+
+    def tear_down_database(self):
         self.testbed.deactivate()
 
     def add_charities(self, charities):

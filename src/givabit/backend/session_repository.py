@@ -15,3 +15,4 @@ class SessionRepository(object):
         user = self.user_repo.authenticate(email=email, password=password)
         session = Session(id=str(uuid.uuid4()), user=user)
         session.put()
+        return session
