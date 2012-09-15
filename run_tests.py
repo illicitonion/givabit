@@ -8,7 +8,12 @@ import unittest
 
 dev_appserver.fix_sys_path()
 
-suites = unittest.loader.TestLoader().discover("src/givabit/backend", pattern="*_test.py")
+paths = ['src/givabit/backend', 'src/givabit/webapp']
+
+suites = unittest.TestSuite()
+
+for path in paths:
+    suites.addTests(unittest.loader.TestLoader().discover(path, pattern='*_test.py'))
 
 if len(sys.argv) > 1:
     def GetTestCases(caseorsuite, acc=None):

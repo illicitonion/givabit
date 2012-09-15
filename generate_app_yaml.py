@@ -49,6 +49,10 @@ handlers:
   secure: always
   ${login_pair}
 
+libraries:
+- name: jinja2
+  version: "2.6"
+
 ${config_specific}"""
 
 

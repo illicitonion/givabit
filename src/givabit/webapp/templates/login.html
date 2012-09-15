@@ -1,0 +1,10 @@
+{% extends "master.html" %}
+{% block body %}
+<form action="/login" method="POST">
+  <div>
+    <input type="email" id="email" name="email" />
+    <input type="passwd" id="passwd" name="passwd" />
+    <input type="submit" id="login-button" value="Log in" />
+  </div>
+</form>
+{% endblock %}
