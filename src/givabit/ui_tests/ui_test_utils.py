@@ -32,7 +32,7 @@ class TestCase(test_utils.TestCase):
     def _start_server(self):
         self.port = self._pick_unused_port()
         dev_appserver = self._get_path_from_root('lib/sdks/google_appengine/google_appengine/dev_appserver.py')
-        basedir = self._get_path_from_root('src/givabit')
+        basedir = self._get_path_from_root('src')
         env = os.environ
         env['PYTHONPATH'] = self._get_path_from_root('src')
         args = [dev_appserver, '--skip_sdk_update_check', '--port=%d' % self.port, basedir]

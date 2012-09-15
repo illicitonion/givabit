@@ -1,5 +1,5 @@
 application: givabit-dev
-version: 1
+version: 2
 runtime: python27
 threadsafe: no
 api_version: 1
@@ -9,7 +9,7 @@ handlers:
 #  static_dir: static
 
 - url: /.*
-  script: webapp/webapp.py
+  script: givabit/webapp/webapp.py
 
 builtins:
 # For test
