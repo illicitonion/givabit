@@ -36,7 +36,7 @@ to_write = """
 application: ${application_name}
 version: ${version}
 runtime: python27
-threadsafe: no
+threadsafe: true
 api_version: 1
 
 handlers:
@@ -45,7 +45,7 @@ handlers:
   upload: static/favicon\.ico
 
 - url: /.*
-  script: givabit/webapp/webapp.py
+  script: givabit.webapp.webapp.app
   secure: always
   ${login_pair}
 
