@@ -15,7 +15,7 @@ handlers:
 - url: /.*
   script: givabit/webapp/webapp.py
   secure: always
-  login: admin # Dev config
+  #login: admin # Dev config
 
 builtins:
 # For test
