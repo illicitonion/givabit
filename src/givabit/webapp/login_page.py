@@ -5,7 +5,7 @@ from givabit.webapp.base_page import BasePage
 
 class LoginPage(BasePage):
     def get(self):
-        self.write_template('login')
+        self.write_template('login', {'title': 'Givabit - Login'})
 
     def post(self):
         session = SessionRepository(UserRepository()).log_in(
