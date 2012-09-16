@@ -20,10 +20,10 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
 
         self.user_repo.create_unconfirmed_user(new_user)
-        self.assertRaises(IncorrectConfirmationCodeException, lambda: self.user_repo.confirm_user(new_user, 'wrong_code'))
+        self.assertRaises(IncorrectConfirmationCodeException, lambda: self.user_repo.confirm_user(email=email, confirmation_code='wrong_code'))
 
         confirmation_code = new_user.confirmation_code
-        self.user_repo.confirm_user(new_user, confirmation_code)
+        self.user_repo.confirm_user(email=email, confirmation_code=confirmation_code)
         self.assertEquals(self.user_repo.get_user(email), new_user)
 
     def test_cannot_log_in_if_unconfirmed(self):
@@ -37,7 +37,7 @@ class UserRepositoryTest(test_utils.TestCase):
         password = 'Some_password'
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
-        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
+        self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
         self.assertRaises(BadLoginException, lambda: self.user_repo.authenticate(email=email, password=''))
 
     def test_preserves_confirmation_code_until_password_set(self):
@@ -46,8 +46,8 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
 
-        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
-        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
+        self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
+        self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
 
         self.user_repo.set_password(email=new_user.email, password=password, confirmation_code=new_user.confirmation_code)
         self._assert_can_log_in(new_user, password)
@@ -58,8 +58,8 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
 
-        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
-        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
+        self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
+        self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
 
         self.assertRaises(IncorrectConfirmationCodeException, lambda: self.user_repo.set_password(email=new_user.email, password=password, confirmation_code='wrong'))
 

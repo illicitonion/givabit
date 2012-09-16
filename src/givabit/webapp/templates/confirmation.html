@@ -1,0 +1,23 @@
+{% extends "master.html" %}
+{% block body %}
+{% if success %}
+<div>Success</div>
+<form action="/user/password" method="POST">
+  <div>
+    <label for="password">Password</label><input type="password" id="password" name="password" />
+    <label for="password_confirm">Confirm</label><input type="password" id="password_confirm" name="password_confirm" />
+    <input type="hidden" id="email" name="email" value="{{ email }}" />
+    <input type="hidden" id="confirmation_code" name="confirmation_code" value="{{ confirmation_code }}" />
+    <input type="submit" id="set_password" value="Set password" />
+  </div>
+</form>
+{% else %}
+  {% if error == 'Bad link' %}
+    <div>There was a problem with the link you clicked - missing querystring.</div>
+  {% elif error == 'Confirmation' %}
+    <div>There was a problem confirming you.</div>
+  {% else %}
+    <div>Something went wrong</div>
+  {% endif %}
+{% endif %}
+{% endblock %}

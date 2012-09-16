@@ -9,14 +9,12 @@ from selenium import webdriver
 
 from google.appengine.ext import testbed
 
-class SmokeTest(ui_test_utils.TestCase):
+class LoginTest(ui_test_utils.TestCase):
     def setUp(self):
-        super(SmokeTest, self).setUp()
+        super(LoginTest, self).setUp()
         self.user = self.create_ready_to_use_user()
 
     def test_can_log_in(self):
-        self.driver.get(self.get_base_url())
-
         login_page = LoginPage(self.driver, self.get_base_url()).load()
         login_page.login(self.user.email, self.user.password)
 

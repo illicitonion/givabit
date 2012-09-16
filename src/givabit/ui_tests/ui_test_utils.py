@@ -8,6 +8,7 @@ import unittest
 from google.appengine.ext.remote_api import remote_api_stub
 
 from givabit.test_common import test_utils
+from givabit.webapp import url
 
 from selenium import webdriver
 
@@ -31,11 +32,12 @@ class TestCase(test_utils.TestCase):
 
     def _start_server(self):
         self.port = self._pick_unused_port()
+        url.BASE_URL = self.get_base_url()
         dev_appserver = self._get_path_from_root('lib/sdks/google_appengine/google_appengine/dev_appserver.py')
         basedir = self._get_path_from_root('src')
         env = os.environ
         env['PYTHONPATH'] = self._get_path_from_root('src')
-        args = [dev_appserver, '--skip_sdk_update_check', '--port=%d' % self.port, basedir]
+        args = [dev_appserver, '--skip_sdk_update_check', '--port=%d' % self.port, '--clear_datastore', basedir]
         self.dev_appserver = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
         started = False
 

@@ -1,5 +1,6 @@
 import uuid
 
+from givabit.backend.errors import MissingValueException
 from givabit.backend.session import Session
 
 class SessionRepository(object):
@@ -7,7 +8,10 @@ class SessionRepository(object):
         self.user_repo = user_repo
 
     def get_sessions(self, email):
-        user = self.user_repo.get_user(email=email)
+        try:
+          user = self.user_repo.get_user(email=email)
+        except MissingValueException:
+            return set()
         sessions = Session.all().filter('user =', user).run()
         return set(sessions)
 

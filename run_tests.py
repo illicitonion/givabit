@@ -8,7 +8,7 @@ import unittest
 
 dev_appserver.fix_sys_path()
 
-paths = ['src/givabit/backend', 'src/givabit/webapp']
+paths = ['src/givabit/backend', 'src/givabit/email', 'src/givabit/webapp']
 
 suites = unittest.TestSuite()
 

@@ -40,6 +40,7 @@ class TestCase(unittest.TestCase):
         self.testbed.activate()
         policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(probability=1)
         self.testbed.init_datastore_v3_stub(consistency_policy=policy)
+        self.testbed.init_mail_stub()
 
     def tear_down_database(self):
         self.testbed.deactivate()
@@ -61,7 +62,7 @@ class TestCase(unittest.TestCase):
         password = str(uuid.uuid4())
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
-        self.user_repo.confirm_user(new_user, new_user.confirmation_code)
+        self.user_repo.confirm_user(email=new_user.email, confirmation_code=new_user.confirmation_code)
         self.user_repo.set_password(email=new_user.email, password=password, confirmation_code=new_user.confirmation_code)
         return TestUser(email, password)
 
@@ -89,9 +90,18 @@ class TestCase(unittest.TestCase):
         for (user, amount) in users_to_payments.items():
             self.da_repo.set_donation_amount(user=user, amount_GBPennies=amount)
 
+    def get_only_sent_email(self, to):
+        mail_stub = self.testbed.get_stub(testbed.MAIL_SERVICE_NAME)
+        messages = mail_stub.get_sent_messages(to=to)
+        self.assertEquals(len(messages), 1)
+        return messages[0]
+
     @classmethod
     def get_and_increment_random_index(cls):
         if not hasattr(cls, 'random_index'):
             cls.random_index = -1
         cls.random_index += 1
         return cls.random_index
+
+    def get_random_value(self):
+        return str(uuid.uuid4())

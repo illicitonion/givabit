@@ -5,6 +5,7 @@ import uuid
 from givabit.backend.errors import IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
 from givabit.backend.user import Password, User, UserStatus
 from givabit.backend.utils import transactionally
+from givabit.email.email_service import EmailService
 
 from google.appengine.ext import db
 
@@ -18,25 +19,30 @@ class BadLoginException(Exception):
     pass
 
 class UserRepository(object):
-    def create_unconfirmed_user(self, user):
+    def __init__(self, email_service=None):
+        self.email_service = email_service if email_service is not None else EmailService()
+
+    def create_unconfirmed_user(self, user, send_email=False):
         # Creates a user whose account cannot be used without confirmation
         user.status = UserStatus.UNCONFIRMED
         user.confirmation_code = self._generate_confirmation_code()
         user.put()
+        if send_email:
+            self.email_service.send_user_confirmation_mail(user)
 
     def create_confirmed_user_FOR_TEST(self, user):
         user.status = UserStatus.VALID
         user.put()
 
-    def confirm_user(self, user, code):
-        found_user = self.get_unconfirmed_user(user.email)
+    def confirm_user(self, email, confirmation_code):
+        user = self.get_unconfirmed_user(email)
         if not hasattr(user, 'confirmation_code') or user.confirmation_code is None:
             raise IllegalArgumentException('Cannot re-confirm already-confirmed user %s' % user)
-        if found_user.confirmation_code == code:
+        if user.confirmation_code == confirmation_code:
             user.status = UserStatus.VALID
             user.put()
         else:
-            raise IncorrectConfirmationCodeException('Could not confirm user %s with code %s' % (user, code))
+            raise IncorrectConfirmationCodeException('Could not confirm user %s with code %s' % (user, confirmation_code))
 
     def get_unconfirmed_user(self, email):
         # Gets a user whose account is not currently active
@@ -50,7 +56,7 @@ class UserRepository(object):
         user = None
         if confirmation_code is not None:
             user = self.get_unconfirmed_user(email=email)
-            self.confirm_user(user=user, code=confirmation_code)
+            self.confirm_user(email=user.email, confirmation_code=confirmation_code)
         elif old_password is not None:
             user = self.authenticate(email=email, password=old_password)
 

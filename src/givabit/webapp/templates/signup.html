@@ -1,0 +1,9 @@
+{% extends "master.html" %}
+{% block body %}
+<form action="/signup" method="POST">
+  <div>
+    <label for="email">Email</label><input type="email" id="email" name="email" />
+    <input type="submit" id="signup" value="Sign up" />
+  </div>
+</form>
+{% endblock %}
