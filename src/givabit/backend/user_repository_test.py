@@ -1,4 +1,4 @@
-from givabit.backend.errors import IllegalArgumentException, MissingValueException
+from givabit.backend.errors import AlreadyExistsException, IllegalArgumentException, MissingValueException
 from givabit.backend.user import User, UserStatus
 from givabit.backend.user_repository import BadLoginException, IncorrectConfirmationCodeException
 
@@ -14,6 +14,15 @@ class UserRepositoryTest(test_utils.TestCase):
         returned_user = self.user_repo.get_unconfirmed_user(email)
         self.assertEquals(returned_user.email, email)
         self.assertEquals(returned_user.status, UserStatus.UNCONFIRMED)
+
+    def test_cannot_create_two_users_with_same_email(self):
+        email = 'someone@foo.com'
+        user = User(email=email)
+        self.user_repo.create_unconfirmed_user(user)
+
+        user2 = User(email=email)
+        with self.assertRaises(AlreadyExistsException):
+            self.user_repo.create_unconfirmed_user(user2)
 
     def test_confirms_user(self):
         email = 'someone@foo.com'

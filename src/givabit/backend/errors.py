@@ -1,3 +1,6 @@
+class AlreadyExistsException(Exception):
+    pass
+
 class IllegalArgumentException(Exception):
     pass
 

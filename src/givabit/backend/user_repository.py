@@ -2,7 +2,7 @@ import hashlib
 import os
 import uuid
 
-from givabit.backend.errors import IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
+from givabit.backend.errors import AlreadyExistsException, IllegalArgumentException, IllegalStateException, MissingValueException, MultipleValueException
 from givabit.backend.user import Password, User, UserStatus
 from givabit.backend.utils import transactionally
 from givabit.email.email_service import EmailService
@@ -24,6 +24,10 @@ class UserRepository(object):
 
     def create_unconfirmed_user(self, user, send_email=False):
         # Creates a user whose account cannot be used without confirmation
+
+        if User.all().filter('email =', user.email).count(limit=1) > 0:
+            raise AlreadyExistsException()
+
         user.status = UserStatus.UNCONFIRMED
         user.confirmation_code = self._generate_confirmation_code()
         user.put()

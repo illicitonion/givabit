@@ -8,6 +8,7 @@ PATHS = {
          'confirmation': Template('/confirmation?email=${email}&confirmation_code=${confirmation_code}'),
          'setpassword': Template('/user/password'),
          'signup': Template('/signup'),
+         'signedup': Template('/'),
         }
 
 BASE_URL = os.environ['BASE_URL'] if 'BASE_URL' in os.environ else 'https://givabit-dev.appspot.com'

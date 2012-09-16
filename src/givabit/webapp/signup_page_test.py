@@ -3,6 +3,7 @@ import uuid
 import webapp2
 
 from givabit.backend.errors import MissingValueException
+from givabit.backend.user import User
 from givabit.backend.user_repository import UserRepository
 from givabit.test_common import test_utils
 from givabit.webapp.signup_page import SignupPage
@@ -15,7 +16,7 @@ class SignupPageTest(test_utils.TestCase):
         self._assert_no_confirmed_user(email=email)
         self._assert_no_unconfirmed_user(email=email)
 
-        request = webapp2.Request.blank('/signup')
+        request = webapp2.Request.blank(Url().for_page('signup'))
         request.method = 'POST'
         request.POST['email'] = email
 
@@ -33,7 +34,7 @@ class SignupPageTest(test_utils.TestCase):
         self._assert_no_confirmed_user(email=email)
         self._assert_no_unconfirmed_user(email=email)
 
-        request = webapp2.Request.blank('/signup')
+        request = webapp2.Request.blank(Url().for_page('signup'))
         request.method = 'POST'
         request.POST['email'] = email
 
@@ -49,7 +50,18 @@ class SignupPageTest(test_utils.TestCase):
         self.assertEquals(email_service.user, user)
 
     def test_fails_if_email_already_exists(self):
-        pass
+        email = 'someone@foo.com'
+        user = User(email=email)
+        self.user_repo.create_unconfirmed_user(user)
+
+        request = webapp2.Request.blank(Url().for_page('signup'))
+        request.method = 'POST'
+        request.POST['email'] = email
+
+        response = webapp2.Response()
+        SignupPage(request=request, response=response).post()
+
+        self.assertIn('already exists', response.body)
 
     def _assert_no_confirmed_user(self, email):
         with self.assertRaises(MissingValueException) as ctx:
