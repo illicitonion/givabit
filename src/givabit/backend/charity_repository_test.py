@@ -17,7 +17,8 @@ class CharityRepositoryTest(test_utils.TestCase):
     def test_gets_single_charity(self):
         self.assertEqual(self.charity_repo.get_charity('Shelter'), test_data.c1)
         self.assertEqual(self.charity_repo.get_charity('Oxfam'), test_data.c2)
-        self.assertRaises(MissingValueException, lambda: self.charity_repo.get_charity('Does not exist'))
+        with self.assertRaises(MissingValueException):
+            self.charity_repo.get_charity('Does not exist')
         try:
             self.charity_repo.get_charity('BHF')
         except MultipleValueException, e:

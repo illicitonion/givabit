@@ -10,7 +10,8 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
 
-        self.assertRaises(MissingValueException, lambda: self.user_repo.get_user(email))
+        with self.assertRaises(MissingValueException):
+            self.user_repo.get_user(email)
         returned_user = self.user_repo.get_unconfirmed_user(email)
         self.assertEquals(returned_user.email, email)
         self.assertEquals(returned_user.status, UserStatus.UNCONFIRMED)
@@ -29,7 +30,8 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
 
         self.user_repo.create_unconfirmed_user(new_user)
-        self.assertRaises(IncorrectConfirmationCodeException, lambda: self.user_repo.confirm_user(email=email, confirmation_code='wrong_code'))
+        with self.assertRaises(IncorrectConfirmationCodeException):
+            self.user_repo.confirm_user(email=email, confirmation_code='wrong_code')
 
         confirmation_code = new_user.confirmation_code
         self.user_repo.confirm_user(email=email, confirmation_code=confirmation_code)
@@ -39,7 +41,8 @@ class UserRepositoryTest(test_utils.TestCase):
         email = 'someone@foo.com'
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
-        self.assertRaises(BadLoginException, lambda: self.user_repo.authenticate(email=email, password=''))
+        with self.assertRaises(BadLoginException):
+            self.user_repo.authenticate(email=email, password='')
 
     def test_cannot_log_in_if_password_not_set(self):
         email = 'someone@foo.com'
@@ -47,7 +50,8 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
         self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
-        self.assertRaises(BadLoginException, lambda: self.user_repo.authenticate(email=email, password=''))
+        with self.assertRaises(BadLoginException):
+            self.user_repo.authenticate(email=email, password='')
 
     def test_preserves_confirmation_code_until_password_set(self):
         email = 'someone@foo.com'
@@ -70,7 +74,8 @@ class UserRepositoryTest(test_utils.TestCase):
         self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
         self.user_repo.confirm_user(email=email, confirmation_code=new_user.confirmation_code)
 
-        self.assertRaises(IncorrectConfirmationCodeException, lambda: self.user_repo.set_password(email=new_user.email, password=password, confirmation_code='wrong'))
+        with self.assertRaises(IncorrectConfirmationCodeException):
+            self.user_repo.set_password(email=new_user.email, password=password, confirmation_code='wrong')
 
     def test_can_log_in(self):
         email = 'someone@foo.com'
@@ -101,7 +106,8 @@ class UserRepositoryTest(test_utils.TestCase):
         new_user = User(email=email)
         self.user_repo.create_unconfirmed_user(new_user)
 
-        self.assertRaises(IllegalArgumentException, lambda: self.user_repo.set_password(email=new_user.email, password=password))
+        with self.assertRaises(IllegalArgumentException):
+            self.user_repo.set_password(email=new_user.email, password=password)
 
     def test_cannot_set_password_without_existing_password_if_confirmed(self):
         email = 'someone@foo.com'
@@ -112,8 +118,10 @@ class UserRepositoryTest(test_utils.TestCase):
         confirmation_code = new_user.confirmation_code
 
         self.user_repo.set_password(email=new_user.email, password=old_password, confirmation_code=new_user.confirmation_code)
-        self.assertRaises(IllegalArgumentException, lambda: self.user_repo.set_password(email=new_user.email, password=new_password, confirmation_code=new_user.confirmation_code))
-        self.assertRaises(IllegalArgumentException, lambda: self.user_repo.set_password(email=new_user.email, password=new_password))
+        with self.assertRaises(IllegalArgumentException):
+            self.user_repo.set_password(email=new_user.email, password=new_password, confirmation_code=new_user.confirmation_code)
+        with self.assertRaises(IllegalArgumentException):
+            self.user_repo.set_password(email=new_user.email, password=new_password)
         self._assert_can_log_in(new_user, old_password)
 
     def test_can_change_password(self):
@@ -126,7 +134,8 @@ class UserRepositoryTest(test_utils.TestCase):
         self.user_repo.set_password(email=new_user.email, password=old_password, confirmation_code=new_user.confirmation_code)
         self.user_repo.set_password(email=new_user.email, password=new_password, old_password=old_password)
 
-        self.assertRaises(BadLoginException, lambda: self.user_repo.authenticate(email=email, password=old_password))
+        with self.assertRaises(BadLoginException):
+            self.user_repo.authenticate(email=email, password=old_password)
         self._assert_can_log_in(new_user, new_password)
         
 
