@@ -2,7 +2,7 @@
 {% block body %}
 {% if success %}
 <div>Success</div>
-<form action="/user/password" method="POST">
+<form action="{{ URL.for_page('setpassword') }}" method="POST">
   <div>
     <label for="password">Password</label><input type="password" id="password" name="password" />
     <label for="password_confirm">Confirm</label><input type="password" id="password_confirm" name="password_confirm" />

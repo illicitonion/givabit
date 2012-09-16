@@ -1,6 +1,7 @@
 import webapp2
 
 from givabit.webapp.template_cache import TemplateCache
+from givabit.webapp.url import Url
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -15,5 +16,8 @@ class BasePage(webapp2.RequestHandler):
         response.headers['Content-Type'] = 'text/html'
         response.out.write(html)
 
-    def write_template(self, template_name, data=()):
+    def write_template(self, template_name, data=None):
+        if data is None:
+            data = {}
+        data['URL'] = Url()
         self._write_html(self.response, self._render_template(template_name, data))

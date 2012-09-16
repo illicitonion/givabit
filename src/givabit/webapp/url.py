@@ -6,6 +6,7 @@ PATHS = {
          'index': Template('/'),
          'login': Template('/login'),
          'confirmation': Template('/confirmation?email=${email}&confirmation_code=${confirmation_code}'),
+         'setpassword': Template('/user/password'),
          'signup': Template('/signup'),
         }
 
