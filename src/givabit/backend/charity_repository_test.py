@@ -23,3 +23,14 @@ class CharityRepositoryTest(test_utils.TestCase):
             self.charity_repo.get_charity('BHF')
         except MultipleValueException, e:
             self.assertSequenceEqual(e.values, [test_data.c3, test_data.c4])
+
+    def test_gets_charity_by_id(self):
+        self.assertEquals(self.charity_repo.get_charity(id=test_data.c1.key().id()), test_data.c1)
+
+    def test_getting_missing_charity_by_id_throws(self):
+        missing_id = 0
+        while missing_id in map(lambda charity: charity.key().id(), self.all_charities):
+            missing_id += 1
+
+        with self.assertRaises(MissingValueException):
+            self.charity_repo.get_charity(id=missing_id)
