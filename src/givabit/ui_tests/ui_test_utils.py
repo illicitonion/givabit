@@ -28,7 +28,8 @@ class TestCase(test_utils.TestCase):
         self.addCleanup(self.dev_appserver.kill)
         super(TestCase, self).setUp()
         self.driver = webdriver.Chrome(executable_path=self._get_chromedriver())
-        self.addCleanup(self.driver.quit)
+        if not 'LEAVE_RUNNING' in os.environ:
+            self.addCleanup(self.driver.quit)
 
     def _start_server(self):
         self.port = self._pick_unused_port()
