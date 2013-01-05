@@ -36,9 +36,9 @@
       }
 
       #menu-container {
-        position: absolute;
-        top: 56px; /* #header.height - (ul#top-menu a).height - #header.border-bottom.width */
-        right: 0px
+        position: relative;
+        bottom: -56px; /* (ul#top-menu a).height - #header.height - (ul#top-menu a).padding-top */
+        float: right;
       }
 
       ul#top-menu {
@@ -52,7 +52,7 @@
       }
 
       ul#top-menu li.selected {
-        padding-top: 1px;
+        border-bottom: 2px solid #efffcd; /* Should really be 1px, but subpixel rounding can mess this up */
       }
 
       ul#top-menu a {
