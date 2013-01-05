@@ -36,15 +36,13 @@
       }
 
       #menu-container {
-        float: right;
-        position: relative;
-        top: 56px;
+        position: absolute;
+        top: 56px; /* #header.height - (ul#top-menu a).height - #header.border-bottom.width */
+        right: 0px
       }
 
       ul#top-menu {
         list-style-type: none;
-        margin-top: 0px;
-        margin-bottom: 0px;
         display: inline;
       }
 
@@ -53,10 +51,15 @@
         width: 10.2em;
       }
 
+      ul#top-menu li.selected {
+        padding-top: 1px;
+      }
+
       ul#top-menu a {
         padding-left: 0px;
         padding-right: 0px;
         padding-top: 5px;
+        height: 44px;
         display: block;
         text-decoration: none;
         background: url('menutab-selected.png');
@@ -64,10 +67,6 @@
         font-size: 2.3em;
         color: black;
         text-align: center;
-      }
-
-      ul#top-menu a.selected {
-        padding-bottom: 1px; /* #header.border-bottom-width */
       }
 
       #title {
@@ -106,7 +105,7 @@
       <div id="menu-container">
         <ul id="top-menu">
           <li><a href="/dashboard">dashboard</a></li>
-          <li><a href="/charities" class="selected">charities</a></li>
+          <li class="selected"><a href="/charities">charities</a></li>
           <li><a href="/about">about</a></li>
           <li><a href="/contact">contact</a></li>
         </ul>
