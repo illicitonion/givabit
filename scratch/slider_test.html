@@ -12,61 +12,68 @@
       width: 200px;
       height: 60px;
     }
-
-    .slider-track {
-      background: blue;
-      width: 200px;
-      height: 4px;
-      position: relative;
-      top: 28px;
-    }
-
-    .slider-dragger {
-      border: 2px solid yellow;
-      z-index: 2;
-      height: 100%;
-      width: 0px;
-      z-index: 2;
-      left: 0px;
-      position: relative;
-    }
   </style>
 </head>
 <body>
   <br /><br />
-  <div class="slider-container">
-    <div class="slider-track"></div>
-    <div class="slider-dragger"></div>
-  </div>
+  <div class="slider-container"></div>
   <script type="text/javascript">
     var mouseClicked = false;
     document.documentElement.onmousedown = function() { mouseClicked = true; };
     document.documentElement.onmouseup = function() { mouseClicked = false; };
 
     function Slider(root) {
-      var sliderDragger = root.getElementsByClassName('slider-dragger')[0];
+      var self = this;
       var parentLeft = goog.style.getPageOffsetLeft(root);
-      var maxRight = parseInt(goog.style.getComputedStyle(root, 'width'));
+      var parentSize = goog.style.getSize(root);
+      var parentWidth = parentSize.width;
+
+      var track = document.createElement('div');
+      track.setAttribute('class', 'slider-track');
+      track.style.backgroundColor = 'blue';
+      track.style.width = parentWidth;
+      track.style.height = '4px';
+      track.style.top = ((parentSize.height - 4) / 2) + 'px';
+      track.style.position = 'relative';
+
+      var dragger = document.createElement('div');
+      dragger.setAttribute('class', 'slider-dragger');
+      dragger.style.border = '2px solid yellow';
+      dragger.style.zIndex = 2;
+      dragger.style.height = '100%';
+      dragger.style.width = '0px';
+      dragger.style.position = 'relative';
+      root.appendChild(track);
+      root.appendChild(dragger);
 
       this.move = function(e) {
         if (mouseClicked) {
-          var currentLeft = goog.style.getComputedStyle(sliderDragger, 'left');
+          var currentLeft = goog.style.getComputedStyle(dragger, 'left');
           var currentLeftPx = parseInt(currentLeft);
           var setting = e.screenX - parentLeft;
-          if (setting >= 0 && setting < maxRight) {
-            sliderDragger.style.left = setting + 'px';
+          if (setting >= 0 && setting < parentWidth) {
+            dragger.style.left = setting + 'px';
           }
+          console.log(self.getPercent());
         }
       }
 
-      this.init = function() {
-        root.addEventListener('mousedown', this.move, false);
-        root.addEventListener('mousemove', this.move, false);
+      root.addEventListener('mousedown', this.move, false);
+      root.addEventListener('mousemove', this.move, false);
+
+      this.getPercent = function() {
+        var value = (parseInt(dragger.style.left) || 0) / parentWidth;
+        if (value < 0.05) {
+          return 0;
+        }
+        if (value > 0.95) {
+          return 1;
+        }
+        return value;
       }
     }
 
-    var sliderDragger = document.getElementsByClassName('slider-container')[0];
-    new Slider(sliderDragger).init();
+    var slider = new Slider(document.getElementsByClassName('slider-container')[0]);
     function testPasses() {
     }
 
