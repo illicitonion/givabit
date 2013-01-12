@@ -54,24 +54,14 @@
 
     function Slider(root) {
       var sliderDragger = root.getElementsByClassName('slider-dragger')[0];
-      var pressed = false;
-      var screenX = 0;
-      var left = 0;
+      var parentLeft = parseInt(getEffectiveStyle(root, 'left'));
       var maxRight = parseInt(getEffectiveStyle(root, 'width'));
 
-      this.mousedown = function(e) {
-        pressed = true;
-        screenX = e.screenX;
-        left = parseInt(sliderDragger.style.left) || 0;
-      }
-
-      this.drag = function(e) {
-        console.log('x');
+      this.move = function(e) {
         if (e.which == 1) {
-          var currentLeft = sliderDragger.style.left || '0px';
+          var currentLeft = getEffectiveStyle(sliderDragger, 'left');
           var currentLeftPx = parseInt(currentLeft);
-          var setting = left + e.screenX - screenX;
-          console.log('setting: ' + setting);
+          var setting = e.screenX - parentLeft;
           if (setting >= 0 && setting < maxRight) {
             sliderDragger.style.left = setting + 'px';
           }
@@ -79,12 +69,8 @@
       }
 
       this.init = function() {
-        sliderDragger.addEventListener('mousedown', this.mousedown, false);
-        root.addEventListener('mousedown', this.mousedown, false);
-        root.addEventListener('mousemove', this.drag, false);
-        sliderDragger.addEventListener('mousemove', this.drag, false);
-        sliderDragger.addEventListener('mouseout', this.drag, false);
-        sliderDragger.addEventListener('mouseup', this.mouseup, false);
+        root.addEventListener('mousedown', this.move, false);
+        root.addEventListener('mousemove', this.move, false);
       }
     }
 
