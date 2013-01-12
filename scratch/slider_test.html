@@ -4,14 +4,13 @@
   <title>action_test.html</title>
   <script src="../lib/misc/closure-library/closure/goog/base.js"></script>
   <script type="text/javascript">
+    goog.require('goog.style');
     goog.require('goog.testing.jsunit');
   </script>
   <style type="text/css">
     .slider-container {
       width: 200px;
       height: 60px;
-      left: 200px;
-      position: absolute;
     }
 
     .slider-track {
@@ -44,26 +43,14 @@
     document.documentElement.onmousedown = function() { mouseClicked = true; };
     document.documentElement.onmouseup = function() { mouseClicked = false; };
 
-    getEffectiveStyle = function(element, property) {
-      var doc = element.ownerDocument;
-      if (doc.defaultView && doc.defaultView.getComputedStyle) {
-        var styles = doc.defaultView.getComputedStyle(element, null);
-        if (styles) {
-          return styles[property] || styles.getPropertyValue(property) || '';
-        }
-      }
-
-      return '';
-    };
-
     function Slider(root) {
       var sliderDragger = root.getElementsByClassName('slider-dragger')[0];
-      var parentLeft = parseInt(getEffectiveStyle(root, 'left'));
-      var maxRight = parseInt(getEffectiveStyle(root, 'width'));
+      var parentLeft = goog.style.getPageOffsetLeft(root);
+      var maxRight = parseInt(goog.style.getComputedStyle(root, 'width'));
 
       this.move = function(e) {
         if (mouseClicked) {
-          var currentLeft = getEffectiveStyle(sliderDragger, 'left');
+          var currentLeft = goog.style.getComputedStyle(sliderDragger, 'left');
           var currentLeftPx = parseInt(currentLeft);
           var setting = e.screenX - parentLeft;
           if (setting >= 0 && setting < maxRight) {
