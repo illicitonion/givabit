@@ -40,6 +40,10 @@
     <div class="slider-dragger"></div>
   </div>
   <script type="text/javascript">
+    var mouseClicked = false;
+    document.documentElement.onmousedown = function() { mouseClicked = true; };
+    document.documentElement.onmouseup = function() { mouseClicked = false; };
+
     getEffectiveStyle = function(element, property) {
       var doc = element.ownerDocument;
       if (doc.defaultView && doc.defaultView.getComputedStyle) {
@@ -58,7 +62,7 @@
       var maxRight = parseInt(getEffectiveStyle(root, 'width'));
 
       this.move = function(e) {
-        if (e.which == 1) {
+        if (mouseClicked) {
           var currentLeft = getEffectiveStyle(sliderDragger, 'left');
           var currentLeftPx = parseInt(currentLeft);
           var setting = e.screenX - parentLeft;
